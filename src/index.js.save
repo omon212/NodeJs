@@ -40,7 +40,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://164.92.190.211:8000/',
+                url: 'http://localhost:5002',
             },
         ],
     },
@@ -59,5 +59,5 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/user/", authRoutes);
 
 // Serverni ishga tushirish
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 500
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
