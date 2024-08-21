@@ -4,6 +4,58 @@ const router = express.Router();
 
 /**
  * @swagger
+ * /user/login:
+ *   post:
+ *     summary: User login
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *       400:
+ *         description: Incorrect username or password
+ *       500:
+ *         description: Server error
+ */
+router.post('/login/', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ msg: "Username and password are required!" });
+    }
+
+    try {
+        let user = await User.findOne({ username, password });
+        if (!user) {
+            return res.status(400).json({ msg: "Incorrect username or password!" });
+        }
+
+        res.status(200).json({
+            msg: "User logged in successfully!",
+            userData: user
+        });
+    } catch (error) {
+        console.error("Error logging in:", error);
+        res.status(500).json({ msg: "Server error", error: error.message });
+    }
+});
+
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     User:
@@ -65,56 +117,6 @@ router.post('/register/', async (req, res) => {
     }
 });
 
-/**
- * @swagger
- * /user/login:
- *   post:
- *     summary: User login
- *     tags: [User]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - username
- *               - password
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: User logged in successfully
- *       400:
- *         description: Incorrect username or password
- *       500:
- *         description: Server error
- */
-router.post('/login/', async (req, res) => {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-        return res.status(400).json({ msg: "Username and password are required!" });
-    }
-
-    try {
-        let user = await User.findOne({ username, password });
-        if (!user) {
-            return res.status(400).json({ msg: "Incorrect username or password!" });
-        }
-
-        res.status(200).json({
-            msg: "User logged in successfully!",
-            userData: user
-        });
-    } catch (error) {
-        console.error("Error logging in:", error);
-        res.status(500).json({ msg: "Server error", error: error.message });
-    }
-});
 
 /**
  * @swagger
@@ -187,5 +189,6 @@ router.get('/users', async (req, res) => {
         res.status(500).json({ msg: "Server error", error: error.message });
     }
 });
+
 
 module.exports = router;

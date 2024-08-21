@@ -8,7 +8,6 @@ const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,7 +19,6 @@ app.use(
     })
 );
 
-// MongoDB ulanishi
 const connectDB = async () => {
     await mongoose.connect("mongodb+srv://omon212:66691717a@cluster0.h4psv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
         .then(() => console.log("MongoDB connected"))
@@ -29,7 +27,6 @@ const connectDB = async () => {
 
 connectDB();
 
-// Swagger opsiyalari
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
@@ -40,24 +37,17 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:5002',
+                url: 'http://localhost:8000',
             },
         ],
     },
     apis: [__dirname + '/routes/*.js'],
 };
 
-
-
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-
-
-
-// Routes setup
 app.use("/user/", authRoutes);
 
-// Serverni ishga tushirish
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
